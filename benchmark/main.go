@@ -3,32 +3,18 @@ package main
 import (
 	"flag"
 	"fmt"
-	"time"
-
 	"github.com/UnTea/Compiler/compiler"
 	"github.com/UnTea/Compiler/evaluator"
+	"github.com/UnTea/Compiler/vm"
+	"io/ioutil"
+	"time"
+
 	"github.com/UnTea/Compiler/lexer"
 	"github.com/UnTea/Compiler/object"
 	"github.com/UnTea/Compiler/parser"
-	"github.com/UnTea/Compiler/vm"
 )
 
 var engine = flag.String("engine", "vm", "use 'vm' or 'eval'")
-
-var input = `
-let fibonacci = fn(x) {
-  if (x == 0) {
-    0
-  } else {
-    if (x == 1) {
-      return 1;
-    } else {
-      fibonacci(x - 1) + fibonacci(x - 2);
-    }
-  }
-};
-fibonacci(35);
-`
 
 func main() {
 	flag.Parse()
@@ -36,13 +22,34 @@ func main() {
 	var duration time.Duration
 	var result object.Object
 
-	l := lexer.New(input)
+	b, err := ioutil.ReadFile("C:\\Users\\UnT3a\\Documents\\Code\\Go\\src\\github.com\\UnTea\\Compiler\\benchmark\\fibonacci.txt")
+
+	if err != nil {
+		fmt.Print(err)
+	}
+
+	str := string(b)
+
+	fmt.Println(str)
+
+	l := lexer.New(str)
+
+	fmt.Println("================== LEXER START ==================")
+	fmt.Println(l)
+	fmt.Println("================== LEXER END ==================")
+
 	p := parser.New(l)
+
+	fmt.Println("================== PARSER START ==================")
+	fmt.Println(p)
+	fmt.Println("================== PARSER END ==================")
+
 	program := p.ParseProgram()
 
 	if *engine == "vm" {
 		comp := compiler.New()
 		err := comp.Compile(program)
+
 		if err != nil {
 			fmt.Printf("compiler error: %s", err)
 			return
@@ -51,8 +58,8 @@ func main() {
 		machine := vm.New(comp.Bytecode())
 
 		start := time.Now()
-
 		err = machine.Run()
+
 		if err != nil {
 			fmt.Printf("vm error: %s", err)
 			return

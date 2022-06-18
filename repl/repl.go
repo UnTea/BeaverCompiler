@@ -20,6 +20,7 @@ func Start(in io.Reader, out io.Writer) {
 	globals := make([]object.Object, vm.GlobalsSize)
 
 	symbolTable := compiler.NewSymbolTable()
+
 	for i, v := range object.Builtins {
 		symbolTable.DefineBuiltin(i, v.Name)
 	}
@@ -27,6 +28,7 @@ func Start(in io.Reader, out io.Writer) {
 	for {
 		fmt.Fprintf(out, PROMPT)
 		scanned := scanner.Scan()
+
 		if !scanned {
 			return
 		}
@@ -36,6 +38,7 @@ func Start(in io.Reader, out io.Writer) {
 		p := parser.New(l)
 
 		program := p.ParseProgram()
+
 		if len(p.Errors()) != 0 {
 			printParserErrors(out, p.Errors())
 			continue
@@ -43,6 +46,7 @@ func Start(in io.Reader, out io.Writer) {
 
 		comp := compiler.NewWithState(symbolTable, constants)
 		err := comp.Compile(program)
+
 		if err != nil {
 			fmt.Fprintf(out, "Woops! Compilation failed:\n %s\n", err)
 			continue
@@ -53,6 +57,7 @@ func Start(in io.Reader, out io.Writer) {
 
 		machine := vm.NewWithGlobalsStore(code, globals)
 		err = machine.Run()
+
 		if err != nil {
 			fmt.Fprintf(out, "Woops! Executing bytecode failed:\n %s\n", err)
 			continue

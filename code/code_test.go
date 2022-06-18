@@ -53,8 +53,7 @@ func TestInstructionsString(t *testing.T) {
 	}
 
 	if concatted.String() != expected {
-		t.Errorf("instructions wrongly formatted.\nwant=%q\ngot=%q",
-			expected, concatted.String())
+		t.Errorf("instructions wrongly formatted.\nwant=%q\ngot=%q", expected, concatted.String())
 	}
 }
 

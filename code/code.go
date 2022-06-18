@@ -33,8 +33,7 @@ func (ins Instructions) fmtInstruction(def *Definition, operands []int) string {
 	operandCount := len(def.OperandWidths)
 
 	if len(operands) != operandCount {
-		return fmt.Sprintf("ERROR: operand len %d does not match defined %d\n",
-			len(operands), operandCount)
+		return fmt.Sprintf("ERROR: operand len %d does not match defined %d\n", len(operands), operandCount)
 	}
 
 	switch operandCount {
